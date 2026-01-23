@@ -119,13 +119,20 @@ Cole este conteúdo:
 ```dockerfile
 FROM alpine:3.20
 
+LABEL maintainer="jvnetobr@fedoraproject.org" 
+
+# Atualiza pacotes
+RUN apk update
+
 # Instala Nginx e prepara diretório de runtime
-RUN apk add --no-cache nginx   && mkdir -p /run/nginx
+RUN apk add --no-cache nginx
+RUN mkdir -p /run/nginx
+
+# Limpa cache apk
+RUN rm -rf /var/cache/apk/*
 
 # Copia sua página para o document root padrão do pacote nginx no Alpine
 COPY index.html /var/lib/nginx/html/index.html
-
-# Substitui o default.conf (para o Nginx servir o index.html em /)
 COPY default.conf /etc/nginx/http.d/default.conf
 
 EXPOSE 80
