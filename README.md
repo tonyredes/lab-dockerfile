@@ -74,7 +74,40 @@ ls -lah index.html
 
 ---
 
-## Checkpoint C — Criar o `Dockerfile`
+## Checkpoint C — Criar o `default.conf` e o `Dockerfile`
+
+> **Por que isso existe?** No pacote `nginx` do Alpine, o `default.conf` padrão pode vir configurado para **retornar 404 para tudo**.  
+> Aqui nós substituímos esse arquivo por uma configuração simples que **serve o `index.html`**.
+
+### C1) Criar o `default.conf`
+Crie o arquivo de configuração do Nginx (use `vim`):
+
+```bash
+vim default.conf
+```
+
+Cole este conteúdo:
+
+```nginx
+server {
+  listen 80 default_server;
+  server_name _;
+
+  root /var/lib/nginx/html;
+  index index.html;
+
+  location / {
+    try_files $uri $uri/ =404;
+  }
+}
+```
+
+**Validação:**
+```bash
+ls -lah default.conf
+```
+
+### C2) Criar o `Dockerfile`
 Crie o arquivo Dockerfile:
 
 ```bash
@@ -92,6 +125,9 @@ RUN apk add --no-cache nginx   && mkdir -p /run/nginx
 # Copia sua página para o document root padrão do pacote nginx no Alpine
 COPY index.html /var/lib/nginx/html/index.html
 
+# Substitui o default.conf (para o Nginx servir o index.html em /)
+COPY default.conf /etc/nginx/http.d/default.conf
+
 EXPOSE 80
 
 # Mantém o processo em foreground (necessário para o container “ficar vivo”)
@@ -101,8 +137,12 @@ CMD ["nginx", "-g", "daemon off;"]
 **Pontos para observar (didática):**
 - `FROM` define a base da imagem.
 - `RUN` cria uma camada que instala pacotes.
-- `COPY` “embarca” seu arquivo dentro da imagem.
+- `COPY` “embarca” seus arquivos dentro da imagem.
 - `CMD` é o processo principal do container.
+
+
+---
+
 
 ---
 
