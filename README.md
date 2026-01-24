@@ -253,7 +253,7 @@ Tire prints (ou cole o output) de:
 3) `curl -i http://localhost:8080` (ou print do navegador)
 
 Sugestão de pasta:
-- `evidencias/lab1/` com `01-images.png`, `02-ps.png`, `03-curl.png`
+- `evidencias/` com `01-images.png`, `02-ps.png`, `03-curl.png`
 
 ---
 
